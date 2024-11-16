@@ -1,9 +1,9 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
-name: Example add-on
-version: "1.2.0"
+name: Battery manager
+version: "0.0.1"
 slug: example
-description: Example add-on
-url: "https://github.com/home-assistant/addons-example/tree/main/example"
+description: Manage you home batteries.
+url: "https://github.com/Local901/battery-management/"
 arch:
   - armhf
   - armv7
@@ -14,7 +14,6 @@ init: false
 map:
   - share:rw
 options:
-  message: "Hello world..."
+  message: "Hello world...!!!"
 schema:
   message: "str?"
-image: "ghcr.io/home-assistant/{arch}-addon-example"
