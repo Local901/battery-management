@@ -1,0 +1,3 @@
+#!/usr/bin/with-contenv python3
+
+print("This is fine end")
