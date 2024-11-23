@@ -41,14 +41,17 @@ def sendToInverter(
     **rendament**: The wanted rendament of the inverter to the battery
     """
 
-    if not active:
+    if not active and rendament != 0:
         client.write_registers(40149, [0, 0], slave=3)
         client.write_registers(40151, [0, 803], slave=3)
         return
 
     client.write_registers(40151, [0, 802], slave=3)
-    # TODO: The 0 has to be solar charge power
-    client.write_registers(40149, [65535, 65535 - rendament], slave=3)
+    if rendament > 0:
+        client.write_registers(40149, [65535, 65535 - rendament], slave=3)
+    else:
+        client.write_registers(40149, [0, abs(rendament)], slave=3)
+
     return
 
 def main():
@@ -66,9 +69,11 @@ def main():
 
     try:
         if settings["control_mode"] == "none":
-            sendToInverter(client, False, 100)
-        elif settings["control_mode"] == "manual":
+            sendToInverter(client, False, 0)
+        elif settings["control_mode"] == "charge":
             sendToInverter(client, bool(settings["manual"]["charge_battery"]), 5000)
+        elif settings["control_mode"] == "discharge":
+            sendToInverter(client, bool(settings["manual"]["charge_battery"]), -5000)
     finally:
         client.close()
 

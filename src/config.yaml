@@ -32,7 +32,7 @@ schema:
   delay: "int(1,)"
   message_wait: "int"
   timeout: "int"
-  control_mode: "list(none|manual)"
+  control_mode: "list(none|charge|discharge)"
   manual:
     charge_battery: bool
   sensors:
