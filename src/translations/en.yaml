@@ -1,44 +1,4 @@
 configuration:
-  host:
-    name: Host
-    description: The url or ip of the transformer.
-  port:
-    name: Port
-    description: "The port that transformer has exposed for modbus (Default: 501)"
-  delay:
-    name: Delay
-    description: Minimum delay in seconds before reconnecting.
-  message_wait:
-    name: Milliseconds to wait
-    description: The milliseconds to wait for a message to arrive.
-  timeout:
-    name: Timeout
-    description: Timeout for connecting and receiving data, in seconds.
-
-  controls:
-    mode:
-      name: Mode
-      description: |-
-        The mode of operation for the battery manager.
-
-        None: Do nothing
-        Manual: Give use manual control over the battery management
-    manual:
-      name: Manual
-      description: Controls for manual mode
-
-      charge_battery:
-        name: Charge battery
-        description: Charge the battery now.
-
-  sensors:
-    name: Sensors
-    description: The sensors this addon should use.
-
-    type:
-      name: Sensor type
-      description: "The type of sensor. (e.g: 'temp' for a temerature sensor.)"
-    identifier:
-      name: Identifier
-      description: "The identifier for a sensor. (e.g: sensor.temerature)"
-  
+  message:
+    name: Message
+    description: The message that will be printed to the log when starting this example add-on.

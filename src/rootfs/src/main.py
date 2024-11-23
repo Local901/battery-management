@@ -1,5 +1,5 @@
 from pymodbus.client import ModbusTcpClient
-from config import config
+from config import settings
 
 # Inverter.WModCfg.WCtlComCfg.WCtlComAct
 # Gewenste waarde
@@ -7,7 +7,7 @@ from config import config
 # 802: Actief (Act)
 # 803: Inactief (Ina)
 # 1
-# Installateur	
+# Installateur
 # 40151
 # 2
 # U32
@@ -18,7 +18,7 @@ from config import config
 # Gewenste waarde
 # Ingesteld rendement
 # 1
-# Installateur	
+# Installateur
 # 40149
 # 2
 # S32
@@ -34,7 +34,7 @@ def sendToInverter(
     ### Send new state to the inverter.
 
     **client**: The client to send modbus requests with.
-    
+
     **active**: Should the inverter store energy
 
     **rendament**: The wanted rendament of the inverter to the battery
@@ -46,24 +46,25 @@ def sendToInverter(
 
     client.write_register(40151, *activeRegisterValue, slave=3)
     # TODO: The 0 has to be solar charge power
-    client.write_register(40149, ...[65535, 65535 - 0], slave=3)
+    client.write_register(40149, *[65535, 65535 - 0], slave=3)
 
     pass
 
 def main():
-    print(config)
+    for key, value in settings.items():           # dict like iteration
+        print(key, value)
 
     client = ModbusTcpClient(
-        config["host"],
-        port=config["port"],
+        settings["host"],
+        port=settings["port"],
         name="BatMan",
-        reconnect_delay=config["delay"] + ".0"
+        reconnect_delay=settings["delay"] + ".0"
     )
     client.connect()
 
     try:
-        if config["controls"]["mode"] == "manual":
-            sendToInverter(client, bool(config["controls"]["manual"]["charge_battery"]), 100)
+        if settings["controls"]["mode"] == "manual":
+            sendToInverter(client, bool(settings["controls"]["manual"]["charge_battery"]), 100)
     finally:
         client.close()
 
