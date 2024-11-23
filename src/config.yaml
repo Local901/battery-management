@@ -1,9 +1,10 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "0.0.2"
+version: "0.0.3"
 slug: example
 description: Manage you home batteries.
 url: "https://github.com/Local901/battery-management/"
+# image: "ghcr.io/local901/{arch}-addon-battery-management"
 arch:
   - armhf
   - armv7
@@ -15,5 +16,27 @@ map:
   - share:rw
 options:
   message: "Hello world...!!!"
+  host: 192.168.178.181
+  port: 502
+  delay: 2
+  message_wait: 60
+  timeout: 5
+  control_mode: none
+  manual:
+    charge_battery: false
+  sensors:
+    - type: temp
+      identifier: sensor.temperature
 schema:
   message: "str?"
+  host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
+  port: "int(0,65535)"
+  delay: "int(1,)"
+  message_wait: "int"
+  timeout: "int"
+  control_mode: "list(none|manual)"
+  manual:
+    charge_battery: bool
+  sensors:
+    - type: "list(temp)"
+      identifier: "str"
