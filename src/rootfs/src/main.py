@@ -51,16 +51,16 @@ def sendToInverter(
     pass
 
 def main():
-    for key, value in settings.items():           # dict like iteration
-        print(key, value)
-
     client = ModbusTcpClient(
         settings["host"],
         port=settings["port"],
         name="BatMan",
-        reconnect_delay=settings["delay"] + ".0"
+        reconnect_delay=str(settings["delay"]) + ".0",
+        timeout=settings["timeout"],
     )
     client.connect()
+    if not client.connected:
+        raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
 
     try:
         if settings["controls"]["mode"] == "manual":
