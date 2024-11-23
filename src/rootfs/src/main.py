@@ -1,5 +1,6 @@
 from pymodbus.client import ModbusTcpClient
 from config import settings
+from homeAssistant import HomeAssistant
 
 # Inverter.WModCfg.WCtlComCfg.WCtlComAct
 # Gewenste waarde
@@ -44,13 +45,14 @@ def sendToInverter(
     if not active:
         activeRegisterValue = [0, 803]
 
-    client.write_register(40151, *activeRegisterValue, slave=3)
+    client.write_registers(40151, activeRegisterValue)
     # TODO: The 0 has to be solar charge power
-    client.write_register(40149, *[65535, 65535 - 0], slave=3)
+    client.write_registers(40149, [65535, 65535 - 0])
 
     pass
 
 def main():
+    ha = HomeAssistant()
     client = ModbusTcpClient(
         settings["host"],
         port=settings["port"],
