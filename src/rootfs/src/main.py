@@ -41,15 +41,15 @@ def sendToInverter(
     **rendament**: The wanted rendament of the inverter to the battery
     """
 
-    activeRegisterValue = [0, 802]
     if not active:
-        activeRegisterValue = [0, 803]
+        client.write_registers(40149, [0, 0], slave=3)
+        client.write_registers(40151, [0, 803], slave=3)
+        return
 
-    client.write_registers(40151, activeRegisterValue, slave=3)
+    client.write_registers(40151, [0, 802], slave=3)
     # TODO: The 0 has to be solar charge power
-    client.write_registers(40149, [65535, 65535 - 0], slave=3)
-
-    pass
+    client.write_registers(40149, [65535, 65535 - rendament], slave=3)
+    return
 
 def main():
     ha = HomeAssistant()
@@ -65,6 +65,8 @@ def main():
         raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
 
     try:
+        if settings["control_mode"] == "none":
+            sendToInverter(client, False, 100)
         if settings["control_mode"] == "manual":
             sendToInverter(client, bool(settings["manual"]["charge_battery"]), 100)
     finally:
