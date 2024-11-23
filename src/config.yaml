@@ -15,7 +15,6 @@ init: false
 map:
   - share:rw
 options:
-  message: "Hello world...!!!"
   host: 192.168.178.181
   port: 502
   delay: 2
@@ -28,7 +27,6 @@ options:
     - type: temp
       identifier: sensor.temperature
 schema:
-  message: "str?"
   host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
   port: "int(0,65535)"
   delay: "int(1,)"
