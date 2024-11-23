@@ -45,9 +45,9 @@ def sendToInverter(
     if not active:
         activeRegisterValue = [0, 803]
 
-    client.write_registers(40151, activeRegisterValue)
+    client.write_registers(40151, activeRegisterValue, slave=3)
     # TODO: The 0 has to be solar charge power
-    client.write_registers(40149, [65535, 65535 - 0])
+    client.write_registers(40149, [65535, 65535 - 0], slave=3)
 
     pass
 
