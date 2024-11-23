@@ -63,8 +63,8 @@ def main():
         raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
 
     try:
-        if settings["controls"]["mode"] == "manual":
-            sendToInverter(client, bool(settings["controls"]["manual"]["charge_battery"]), 100)
+        if settings["control_mode"] == "manual":
+            sendToInverter(client, bool(settings["manual"]["charge_battery"]), 100)
     finally:
         client.close()
 
