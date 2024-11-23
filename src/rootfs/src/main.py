@@ -67,8 +67,8 @@ def main():
     try:
         if settings["control_mode"] == "none":
             sendToInverter(client, False, 100)
-        if settings["control_mode"] == "manual":
-            sendToInverter(client, bool(settings["manual"]["charge_battery"]), 100)
+        elif settings["control_mode"] == "manual":
+            sendToInverter(client, bool(settings["manual"]["charge_battery"]), 5000)
     finally:
         client.close()
 
