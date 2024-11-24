@@ -41,7 +41,7 @@ def sendToInverter(
     **rendament**: The wanted rendament of the inverter to the battery
     """
 
-    if not active and rendament != 0:
+    if not active or rendament == 0:
         client.write_registers(40149, [0, 0], slave=3)
         client.write_registers(40151, [0, 803], slave=3)
         return
