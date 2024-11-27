@@ -101,7 +101,7 @@ def autoImplementation(client: ModbusTcpClient):
             print(f"TIME: {frames[currentFrameIndex + 1].time}")
             currentFrameIndex += 1
 
-        if currentFrameIndex >= (len(frames) - 2):
+        if currentFrameIndex >= (len(frames) - 1):
             print("Automated schedule has finished. Restart addon to restart the schedule.")
             print("Last scheduled action will be active until restart.")
 
