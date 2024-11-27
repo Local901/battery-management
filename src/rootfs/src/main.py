@@ -70,10 +70,10 @@ def autoImplementation(client: ModbusTcpClient):
     for value in settings["auto"]:
         frames.append(parseTimeFrame(value))
 
-    currentFrameIndex = 0
+    currentFrameIndex = -1
 
     # Find index of first frame with time falling before now
-    for i in range(frames.count()):
+    for i in range(len(frames)):
         frame: list[TimeFrame] = frames[i]
         if frame.time.isBeforeNow():
             currentFrameIndex = i
@@ -82,19 +82,19 @@ def autoImplementation(client: ModbusTcpClient):
 
     # Loop
     while True:
-        frame: TimeFrame = frames[currentFrameIndex]
+        frame: TimeFrame = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
 
-        if frame.action == "0":
+        if frame.action == "0" or frame is None:
             sendToInverter(client, False, 0)
         elif frame.action == "c":
             sendToInverter(client, True, frame.power if frame.power > 10 else 5000)
         elif frame.action == "d":
             sendToInverter(client, True, -1 * (frame.power if frame.power > 10 else 5000))
         
-        if currentFrameIndex < (frames.count - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time):
+        if currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time):
             currentFrameIndex += 1
 
-        if currentFrameIndex >= (frames.count - 2):
+        if currentFrameIndex >= (len(frames) - 2):
             print("Automated schedule has finished. Restart addon to restart the schedule.")
             print("Last scheduled action will be active until restart.")
 
