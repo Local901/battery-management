@@ -22,6 +22,7 @@ class Time():
             return False
 
         currentTime = datetime.now()
+        print(f"{currentTime.hour}:{currentTime.minute}")
         if self.hour < currentTime.hour:
             return True
         elif self.hour == currentTime.hour and self.minutes <= currentTime.minute:
