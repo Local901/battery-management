@@ -45,14 +45,17 @@ def sendToInverter(
     """
 
     if not active or rendament == 0:
+        print("ACTION: Release control.")
         client.write_registers(40149, [0, 0], slave=3)
         client.write_registers(40151, [0, 803], slave=3)
         return
 
     client.write_registers(40151, [0, 802], slave=3)
     if rendament > 0:
+        print(f"ACTION: Charge {rendament}")
         client.write_registers(40149, [65535, 65535 - rendament], slave=3)
     else:
+        print(f"ACTION: Discharge {abs(rendament)}")
         client.write_registers(40149, [0, abs(rendament)], slave=3)
 
     return
@@ -74,11 +77,14 @@ def autoImplementation(client: ModbusTcpClient):
 
     # Find index of first frame with time falling before now
     for i in range(len(frames)):
-        frame: list[TimeFrame] = frames[i]
+        frame: TimeFrame = frames[i]
         if frame.time.isBeforeNow():
             currentFrameIndex = i
         else:
             break
+
+    if currentFrameIndex >= 0:
+        print(f"TIME: {frames[currentFrameIndex].time}")
 
     # Loop
     while True:
@@ -92,6 +98,7 @@ def autoImplementation(client: ModbusTcpClient):
             sendToInverter(client, True, -1 * (frame.power if frame.power > 10 else 5000))
         
         if currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time if frame is not None else None):
+            print(f"TIME: {frames[currentFrameIndex + 1].time}")
             currentFrameIndex += 1
 
         if currentFrameIndex >= (len(frames) - 2):

@@ -9,6 +9,9 @@ class Time():
         self.minutes = minutes
         pass
 
+    def __str__(self) -> str:
+        return f"{self.hour}:{self.minutes}"
+
     def isBeforeNow(self, butAfter = None) -> bool:
         """
         Check if the current time is past the time set in this object.
