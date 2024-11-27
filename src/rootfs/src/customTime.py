@@ -9,7 +9,7 @@ class Time():
         self.minutes = minutes
         pass
 
-    def isBeforeNow(self, butAfter: Time = None) -> bool:
+    def isBeforeNow(self, butAfter = None) -> bool:
         """
         Check if the current time is past the time set in this object.
         """
@@ -25,7 +25,7 @@ class Time():
             return True
         return False
     
-    def before(self, other: Time) -> bool:
+    def before(self, other) -> bool:
         if self.hour < other.hour:
             return True
         elif self.hour == other.hour and self.minutes < other.minutes:
