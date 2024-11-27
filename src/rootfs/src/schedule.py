@@ -20,7 +20,7 @@ def parseTimeFrame(value: str) -> TimeFrame:
     """
     splitValue = [v for v in value.split() if v != '']
 
-    if 1 < len(splitValue) < 4:
+    if not (1 < len(splitValue) < 4):
         raise Exception(f"Expected two or three parts. \nExpected: '<time: hh:mm> <action: 0|c|d> [<power: number>]'\nRecieved: {value}")
     
     if len(splitValue) >= 2:
