@@ -6,6 +6,9 @@ class TimeFrame():
     power = 0
 
     def __init__(self, time: Time, action: str, power = 0):
+        print(time)
+        print(action)
+        print(power)
         self.time = time
         self.action = action
         self.power = power

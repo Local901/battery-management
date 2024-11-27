@@ -83,14 +83,14 @@ def autoImplementation(client: ModbusTcpClient):
     # Loop
     while True:
         frame: TimeFrame = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
-
+        print(frames)
         if frame is None or frame.action == "0":
             sendToInverter(client, False, 0)
         elif frame.action == "c":
             sendToInverter(client, True, frame.power if frame.power > 10 else 5000)
         elif frame.action == "d":
             sendToInverter(client, True, -1 * (frame.power if frame.power > 10 else 5000))
-        
+        print(frames[currentFrameIndex + 1])
         if currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time):
             currentFrameIndex += 1
 
