@@ -21,6 +21,7 @@ class Time():
         if (butAfter is not None) and self.before(butAfter) and Time.isBeforeNow(butAfter):
             return False
 
+        currentTime = datetime.now()
         if self.hour < currentTime.hour:
             return True
         elif self.hour == currentTime.hour and self.minutes <= currentTime.minute:
