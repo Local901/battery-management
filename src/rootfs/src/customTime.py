@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Time():
     hour = 0
@@ -22,7 +22,7 @@ class Time():
             return False
 
         currentTime = datetime.now()
-        print(f"{currentTime.hour}:{currentTime.minute}")
+        print(f"{timezone.utcoffset}")
         if self.hour < currentTime.hour:
             return True
         elif self.hour == currentTime.hour and self.minutes <= currentTime.minute:
