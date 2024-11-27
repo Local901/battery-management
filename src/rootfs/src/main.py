@@ -84,7 +84,7 @@ def autoImplementation(client: ModbusTcpClient):
     while True:
         frame: TimeFrame = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
 
-        if frame.action == "0" or frame is None:
+        if frame is None or frame.action == "0":
             sendToInverter(client, False, 0)
         elif frame.action == "c":
             sendToInverter(client, True, frame.power if frame.power > 10 else 5000)
