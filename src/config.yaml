@@ -32,9 +32,11 @@ schema:
   delay: "int(1,)"
   message_wait: "int"
   timeout: "int"
-  control_mode: "list(none|charge|discharge)"
+  control_mode: "list(none|charge|discharge|auto)"
   manual:
     charge_battery: bool
+  auto:
+    - str
   sensors:
     - type: "list(temp)"
-      identifier: "str"
+      identifier: "device"
