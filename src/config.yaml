@@ -23,6 +23,8 @@ options:
   control_mode: none
   manual:
     charge_battery: false
+  auto:
+    - "01:00 0"
   sensors:
     - type: temp
       identifier: sensor.temperature
@@ -36,7 +38,7 @@ schema:
   manual:
     charge_battery: bool
   auto:
-    - str
+    - str?
   sensors:
     - type: "list(temp)"
-      identifier: "device"
+      identifier: "str"
