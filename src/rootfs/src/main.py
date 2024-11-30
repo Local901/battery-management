@@ -72,19 +72,11 @@ def autoImplementation(client: ModbusTcpClient):
     # Load schedule frames
     for value in settings["auto"]:
         frames.append(parseTimeFrame(value))
+    frames.insert(0, TimeFrame(currentTime(), '0'))
 
-    currentFrameIndex = -1
+    currentFrameIndex = 0
 
-    # Find index of first frame with time falling before now
-    for i in range(len(frames)):
-        frame: TimeFrame = frames[i]
-        if frame.time.isBeforeNow():
-            currentFrameIndex = i
-        else:
-            break
-
-    if currentFrameIndex >= 0:
-        print(f"TIME: {frames[currentFrameIndex].time}")
+    print(f"TIME: {frames[currentFrameIndex].time}")
 
     # Loop
     while True:
