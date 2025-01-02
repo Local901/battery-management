@@ -1,4 +1,33 @@
 configuration:
-  message:
-    name: Message
-    description: The message that will be printed to the log when starting this example add-on.
+  host:
+    name: Inverter host
+    description: Host ip of the inverter.
+  port:
+    name: Modbus port
+    description: Port for modbus communication.
+
+  delay:
+    name: Modbus reconnection delay
+    description: Delay between reconnection attempts.
+  timeout:
+    name: Message timeout
+    description: The time between 2 modbus requests if they are send directly after one another.
+
+  control_mode:
+    name: Control mode
+    description: >-
+      Mode in which behavior of the addon id determined:
+       none: release control to the transformer. |
+       charge: Charge the battery with a value of 5000. |
+       discharge: Discharge the battery with a value of 5000. |
+       schedule: Follow the schedule from start to finish. |
+  schedule:
+    name: Schedule
+    description: >-
+      Manually define a schedule the addon should follow. When the addon is started in ths schedule mode it will start from the first entry.
+       |
+      Syntax: '<time: 1:00> <mode: [0,c,d]> [power: 0-...]'
+      Examples:
+       none: '5:00 0' |
+       charge: '13:00 c 5000' |
+       discharge: '16:00 d 5000'

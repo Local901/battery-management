@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "0.0.6"
+version: "0.0.7"
 slug: batman
 description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
@@ -18,17 +18,15 @@ options:
   host: 192.168.178.181
   port: 502
   delay: 2
-  message_wait: 60
   timeout: 5
   control_mode: none
-  auto:
+  schedule:
     - "01:00 0"
 schema:
   host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
   port: "int(0,65535)"
   delay: "int(1,)"
-  message_wait: "int"
   timeout: "int"
-  control_mode: "list(none|charge|discharge|auto)"
-  auto:
+  control_mode: "list(none|charge|discharge|schedule)"
+  schedule:
     - str?
