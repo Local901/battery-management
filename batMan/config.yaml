@@ -1,10 +1,10 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
 version: "0.0.4"
-slug: example
+slug: batMan
 description: Manage you home batteries.
 url: "https://github.com/Local901/battery-management/"
-# image: "ghcr.io/local901/{arch}-addon-battery-management"
+image: "ghcr.io/local901/{arch}-addon-batMan"
 arch:
   - armhf
   - armv7
@@ -21,8 +21,6 @@ options:
   message_wait: 60
   timeout: 5
   control_mode: none
-  manual:
-    charge_battery: false
   auto:
     - "01:00 0"
   sensors:
@@ -35,8 +33,6 @@ schema:
   message_wait: "int"
   timeout: "int"
   control_mode: "list(none|charge|discharge|auto)"
-  manual:
-    charge_battery: bool
   auto:
     - str?
   sensors:

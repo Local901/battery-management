@@ -117,9 +117,9 @@ def main():
         if settings["control_mode"] == "none":
             sendToInverter(client, False, 0)
         elif settings["control_mode"] == "charge":
-            sendToInverter(client, bool(settings["manual"]["charge_battery"]), 5000)
+            sendToInverter(client, True, 5000)
         elif settings["control_mode"] == "discharge":
-            sendToInverter(client, bool(settings["manual"]["charge_battery"]), -5000)
+            sendToInverter(client, True, -5000)
         elif settings["control_mode"] == "auto":
             autoImplementation(client)
     finally:
