@@ -1,10 +1,10 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "0.0.4"
-slug: batMan
-description: Manage you home batteries.
+version: "0.0.5"
+slug: batman
+description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
-image: "ghcr.io/local901/{arch}-addon-batMan"
+image: "ghcr.io/local901/{arch}-addon-batman"
 arch:
   - armhf
   - armv7
