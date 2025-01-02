@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "0.0.5"
+version: "0.0.6"
 slug: batman
 description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
@@ -23,9 +23,6 @@ options:
   control_mode: none
   auto:
     - "01:00 0"
-  sensors:
-    - type: temp
-      identifier: sensor.temperature
 schema:
   host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
   port: "int(0,65535)"
@@ -35,6 +32,3 @@ schema:
   control_mode: "list(none|charge|discharge|auto)"
   auto:
     - str?
-  sensors:
-    - type: "list(temp)"
-      identifier: "str"
