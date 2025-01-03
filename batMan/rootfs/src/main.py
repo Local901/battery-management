@@ -65,12 +65,12 @@ def autoImplementation(client: ModbusTcpClient):
     """
     ### Automate a schedule
 
-    Will read a schedule in from setting.auto(: str[]) and execute the expected actions following the schedule.
+    Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
     frames: list[TimeFrame] = []
 
     # Load schedule frames
-    for value in settings["auto"]:
+    for value in settings["schedule"]:
         frames.append(parseTimeFrame(value))
     frames.insert(0, TimeFrame(currentTime(), '0'))
 
