@@ -110,18 +110,21 @@ def main():
         timeout=settings["timeout"],
     )
     client.connect()
-    if not client.connected:
-        raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
 
     try:
+        if not client.connected:
+            raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
+
         if settings["control_mode"] == "none":
             sendToInverter(client, False, 0)
         elif settings["control_mode"] == "charge":
             sendToInverter(client, True, 5000)
         elif settings["control_mode"] == "discharge":
             sendToInverter(client, True, -5000)
-        elif settings["control_mode"] == "auto":
+        elif settings["control_mode"] == "schedule":
             autoImplementation(client)
+        else:
+            raise Exception("Unknown control mode \"" + settings["control_mode"] + '"')
     finally:
         client.close()
 

@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "0.0.8"
+version: "0.0.9"
 slug: batman
 description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
