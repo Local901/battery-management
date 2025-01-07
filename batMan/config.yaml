@@ -4,7 +4,7 @@ version: "0.0.9"
 slug: batman
 description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
-# image: "ghcr.io/local901/{arch}-addon-batman"
+image: "ghcr.io/local901/{arch}-addon-batman"
 arch:
   - armhf
   - armv7
