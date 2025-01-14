@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from config import config
 
 class Time():
     hour = 0
@@ -7,7 +7,6 @@ class Time():
     def __init__(self, hour: int, minutes: int):
         self.hour = hour
         self.minutes = minutes
-        pass
 
     def __str__(self) -> str:
         return f"{self.hour}:{self.minutes}"
@@ -21,7 +20,7 @@ class Time():
         if (butAfter is not None) and self.before(butAfter) and Time.isBeforeNow(butAfter):
             return False
 
-        currentTime = datetime.now()
+        currentTime = config.getCurrentTime()
         if self.hour < currentTime.hour:
             return True
         elif self.hour == currentTime.hour and self.minutes <= currentTime.minute:
@@ -36,5 +35,5 @@ class Time():
         return False
 
 def currentTime() -> Time:
-    currentTime = datetime.now()
+    currentTime = config.getCurrentTime()
     return Time(currentTime.hour, currentTime.minute)

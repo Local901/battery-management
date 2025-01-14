@@ -1,8 +1,7 @@
 from pymodbus.client import ModbusTcpClient
-from config import settings
-from homeAssistant import HomeAssistant
+from config import config, ControlMode
 from customTime import currentTime
-from schedule import parseTimeFrame, TimeFrame
+from schedule import TimeFrame
 import time
 
 # Inverter.WModCfg.WCtlComCfg.WCtlComAct
@@ -67,11 +66,7 @@ def autoImplementation(client: ModbusTcpClient):
 
     Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
-    frames: list[TimeFrame] = []
-
-    # Load schedule frames
-    for value in settings["schedule"]:
-        frames.append(parseTimeFrame(value))
+    frames = config.getSchedule()
     frames.insert(0, TimeFrame(currentTime(), '0'))
 
     currentFrameIndex = 0
@@ -101,30 +96,30 @@ def autoImplementation(client: ModbusTcpClient):
         time.sleep(30)
 
 def main():
-    ha = HomeAssistant()
     client = ModbusTcpClient(
-        settings["host"],
-        port=settings["port"],
+        config.getHost(),
+        port=config.getPort(),
         name="BatMan",
-        reconnect_delay=str(settings["delay"]) + ".0",
-        timeout=settings["timeout"],
+        reconnect_delay=str(config.getDelay()) + ".0",
+        timeout=config.getTimeout(),
     )
     client.connect()
 
     try:
         if not client.connected:
-            raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
+            raise Exception("Failed to make connection on: " + config.getHost() + ":" + str(config.getPort()))
 
-        if settings["control_mode"] == "none":
+        mode = config.getControlMode()
+        if mode == ControlMode.NONE:
             sendToInverter(client, False, 0)
-        elif settings["control_mode"] == "charge":
+        elif mode == ControlMode.CHARGE:
             sendToInverter(client, True, 5000)
-        elif settings["control_mode"] == "discharge":
+        elif mode == ControlMode.DISCHARGE:
             sendToInverter(client, True, -5000)
-        elif settings["control_mode"] == "schedule":
+        elif mode == ControlMode.SCHEDULE:
             autoImplementation(client)
         else:
-            raise Exception("Unknown control mode \"" + settings["control_mode"] + '"')
+            raise Exception("Unknown control mode \"" + mode.name + '"')
     finally:
         client.close()
 
