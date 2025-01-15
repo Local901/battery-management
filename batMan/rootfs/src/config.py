@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from dynaconf import Dynaconf
 from schedule import parseTimeFrame, TimeFrame
 
@@ -46,6 +46,10 @@ class Config:
         return frames
     
     def getCurrentTime(self) -> datetime:
-        return datetime.now()
+        return datetime.now(
+            timezone(
+                timedelta(hours=self._settings["timezone"])
+            )
+        )
 
 config = Config()

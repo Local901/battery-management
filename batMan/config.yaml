@@ -17,6 +17,7 @@ map:
 options:
   host: 192.168.178.181
   port: 502
+  timezone: 0
   delay: 2
   timeout: 5
   control_mode: none
@@ -25,6 +26,7 @@ options:
 schema:
   host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
   port: "int(0,65535)"
+  timezone: "int(-11,14)"
   delay: "int(1,)"
   timeout: "int"
   control_mode: "list(none|charge|discharge|schedule)"
