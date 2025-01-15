@@ -26,7 +26,7 @@ class Time():
         elif self.hour == currentTime.hour and self.minutes <= currentTime.minute:
             return True
         return False
-    
+
     def before(self, other) -> bool:
         if self.hour < other.hour:
             return True

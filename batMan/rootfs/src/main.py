@@ -4,30 +4,6 @@ from customTime import currentTime
 from schedule import TimeFrame
 import time
 
-# Inverter.WModCfg.WCtlComCfg.WCtlComAct
-# Gewenste waarde
-# Eff-+blindverm.reg. via commu.
-# 802: Actief (Act)
-# 803: Inactief (Ina)
-# 1
-# Installateur
-# 40151
-# 2
-# U32
-# TAGLIST
-# WO
-
-# Inverter.WModCfg.WCtlComCfg.WSpt
-# Gewenste waarde
-# Ingesteld rendement
-# 1
-# Installateur
-# 40149
-# 2
-# S32
-# FIX0
-# WO
-
 def sendToInverter(
     client: ModbusTcpClient,
     active: bool,
@@ -66,7 +42,9 @@ def autoImplementation(client: ModbusTcpClient):
 
     Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
-    frames = config.getSchedule()
+    frames: list[TimeFrame] = []
+    for value in config.getSchedule():
+        frames.append(parseTimeFrame(value))
     frames.insert(0, TimeFrame(currentTime(), '0'))
 
     currentFrameIndex = 0
@@ -83,7 +61,7 @@ def autoImplementation(client: ModbusTcpClient):
             sendToInverter(client, True, frame.power if frame.power > 10 else 5000)
         elif frame.action == "d":
             sendToInverter(client, True, -1 * (frame.power if frame.power > 10 else 5000))
-        
+
         if currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time if frame is not None else None):
             print(f"TIME: {frames[currentFrameIndex + 1].time}")
             currentFrameIndex += 1
