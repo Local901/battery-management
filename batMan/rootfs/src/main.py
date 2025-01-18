@@ -1,36 +1,11 @@
-from pymodbus.client import ModbusTcpClient
-from config import settings
-from homeAssistant import HomeAssistant
+from modbus import ModbusClient
+from config import config, ControlMode
 from customTime import currentTime
-from schedule import parseTimeFrame, TimeFrame
+from schedule import TimeFrame, parseTimeFrame
 import time
 
-# Inverter.WModCfg.WCtlComCfg.WCtlComAct
-# Gewenste waarde
-# Eff-+blindverm.reg. via commu.
-# 802: Actief (Act)
-# 803: Inactief (Ina)
-# 1
-# Installateur
-# 40151
-# 2
-# U32
-# TAGLIST
-# WO
-
-# Inverter.WModCfg.WCtlComCfg.WSpt
-# Gewenste waarde
-# Ingesteld rendement
-# 1
-# Installateur
-# 40149
-# 2
-# S32
-# FIX0
-# WO
-
 def sendToInverter(
-    client: ModbusTcpClient,
+    client: ModbusClient,
     active: bool,
     rendament: int,
 ):
@@ -46,31 +21,29 @@ def sendToInverter(
 
     if not active or rendament == 0:
         print("ACTION: Release control.")
-        client.write_registers(40149, [0, 0], slave=3)
-        client.write_registers(40151, [0, 803], slave=3)
+        client.writeRegisters(40149, [0, 0], slave=3)
+        client.writeRegisters(40151, [0, 803], slave=3)
         return
 
-    client.write_registers(40151, [0, 802], slave=3)
+    client.writeRegisters(40151, [0, 802], slave=3)
     if rendament > 0:
         print(f"ACTION: Charge {rendament}")
-        client.write_registers(40149, [65535, 65535 - rendament], slave=3)
+        client.writeRegisters(40149, [65535, 65535 - rendament], slave=3)
     else:
         print(f"ACTION: Discharge {abs(rendament)}")
-        client.write_registers(40149, [0, abs(rendament)], slave=3)
+        client.writeRegisters(40149, [0, abs(rendament)], slave=3)
 
     return
 
 
-def autoImplementation(client: ModbusTcpClient):
+def autoImplementation(client: ModbusClient):
     """
     ### Automate a schedule
 
     Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
     frames: list[TimeFrame] = []
-
-    # Load schedule frames
-    for value in settings["schedule"]:
+    for value in config.getSchedule():
         frames.append(parseTimeFrame(value))
     frames.insert(0, TimeFrame(currentTime(), '0'))
 
@@ -88,7 +61,7 @@ def autoImplementation(client: ModbusTcpClient):
             sendToInverter(client, True, frame.power if frame.power > 10 else 5000)
         elif frame.action == "d":
             sendToInverter(client, True, -1 * (frame.power if frame.power > 10 else 5000))
-        
+
         if currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time if frame is not None else None):
             print(f"TIME: {frames[currentFrameIndex + 1].time}")
             currentFrameIndex += 1
@@ -101,30 +74,21 @@ def autoImplementation(client: ModbusTcpClient):
         time.sleep(30)
 
 def main():
-    ha = HomeAssistant()
-    client = ModbusTcpClient(
-        settings["host"],
-        port=settings["port"],
-        name="BatMan",
-        reconnect_delay=str(settings["delay"]) + ".0",
-        timeout=settings["timeout"],
-    )
+    client = ModbusClient()
     client.connect()
 
     try:
-        if not client.connected:
-            raise Exception("Failed to make connection on: " + settings["host"] + ":" + str(settings["port"]))
-
-        if settings["control_mode"] == "none":
+        mode = config.getControlMode()
+        if mode == ControlMode.NONE:
             sendToInverter(client, False, 0)
-        elif settings["control_mode"] == "charge":
+        elif mode == ControlMode.CHARGE:
             sendToInverter(client, True, 5000)
-        elif settings["control_mode"] == "discharge":
+        elif mode == ControlMode.DISCHARGE:
             sendToInverter(client, True, -5000)
-        elif settings["control_mode"] == "schedule":
+        elif mode == ControlMode.SCHEDULE:
             autoImplementation(client)
         else:
-            raise Exception("Unknown control mode \"" + settings["control_mode"] + '"')
+            raise Exception("Unknown control mode \"" + mode.name + '"')
     finally:
         client.close()
 

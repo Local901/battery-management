@@ -5,6 +5,9 @@ configuration:
   port:
     name: Modbus port
     description: Port for modbus communication.
+  timezone:
+    name: Timezone
+    description: Number of hours that differ between local time and UTC. This can range from -11 to +14.
 
   delay:
     name: Modbus reconnection delay

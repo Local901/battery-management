@@ -1,6 +1,6 @@
-# Home Assistant Add-on: Example add-on
+# Home Assistant Add-on: Battery manager
 
-_Example add-on to use as a blueprint for new add-ons._
+This manger will help you to manager your home battery.
 
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
@@ -13,3 +13,5 @@ _Example add-on to use as a blueprint for new add-ons._
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
+
+This battery manager works with SMA tripower transfomer. 
