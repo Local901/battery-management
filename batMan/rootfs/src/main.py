@@ -1,11 +1,11 @@
-from pymodbus.client import ModbusTcpClient
+from modbus import ModbusClient
 from config import config, ControlMode
 from customTime import currentTime
-from schedule import TimeFrame
+from schedule import TimeFrame, parseTimeFrame
 import time
 
 def sendToInverter(
-    client: ModbusTcpClient,
+    client: ModbusClient,
     active: bool,
     rendament: int,
 ):
@@ -21,22 +21,22 @@ def sendToInverter(
 
     if not active or rendament == 0:
         print("ACTION: Release control.")
-        client.write_registers(40149, [0, 0], slave=3)
-        client.write_registers(40151, [0, 803], slave=3)
+        client.writeRegisters(40149, [0, 0], slave=3)
+        client.writeRegisters(40151, [0, 803], slave=3)
         return
 
-    client.write_registers(40151, [0, 802], slave=3)
+    client.writeRegisters(40151, [0, 802], slave=3)
     if rendament > 0:
         print(f"ACTION: Charge {rendament}")
-        client.write_registers(40149, [65535, 65535 - rendament], slave=3)
+        client.writeRegisters(40149, [65535, 65535 - rendament], slave=3)
     else:
         print(f"ACTION: Discharge {abs(rendament)}")
-        client.write_registers(40149, [0, abs(rendament)], slave=3)
+        client.writeRegisters(40149, [0, abs(rendament)], slave=3)
 
     return
 
 
-def autoImplementation(client: ModbusTcpClient):
+def autoImplementation(client: ModbusClient):
     """
     ### Automate a schedule
 
@@ -74,19 +74,10 @@ def autoImplementation(client: ModbusTcpClient):
         time.sleep(30)
 
 def main():
-    client = ModbusTcpClient(
-        config.getHost(),
-        port=config.getPort(),
-        name="BatMan",
-        reconnect_delay=str(config.getDelay()) + ".0",
-        timeout=config.getTimeout(),
-    )
+    client = ModbusClient()
     client.connect()
 
     try:
-        if not client.connected:
-            raise Exception("Failed to make connection on: " + config.getHost() + ":" + str(config.getPort()))
-
         mode = config.getControlMode()
         if mode == ControlMode.NONE:
             sendToInverter(client, False, 0)
