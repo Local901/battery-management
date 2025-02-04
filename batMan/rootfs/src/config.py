@@ -1,5 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from dynaconf import Dynaconf
+import requests
+import os
 from enum import Enum
 
 class ControlMode(Enum):
@@ -7,6 +9,31 @@ class ControlMode(Enum):
     CHARGE = 2
     DISCHARGE = 3
     SCHEDULE = 4
+
+
+_supervisorToken = os.environ.get("SUPERVISOR_TOKEN")
+_headers = {
+    "Authorization": "Bearer " + _supervisorToken,
+    "content-type": "application/json",
+}
+
+# https://developers.home-assistant.io/docs/api/rest/
+def _getHaState(entityId: str) -> str | None:
+    """ Get the state of an entity.
+
+        Returns: State of the entity. If this is not allowed or fails it will return None.
+    """
+    if (_supervisorToken is None):
+        return None
+    
+    response = requests.get(
+        "http://supervisor/core/api/states/" + entityId,
+        headers = _headers
+    )
+    if response.status_code != 200:
+        print("WARNING: Failed to get the state of '" + entityId + "'")
+        return None
+    return response.json()["state"]
 
 class Config:
     _settings = Dynaconf(
