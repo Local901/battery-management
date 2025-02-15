@@ -3,6 +3,7 @@ from dynaconf import Dynaconf
 import requests
 import os
 from enum import Enum
+from collections.abc import Callable
 
 class ControlMode(Enum):
     NONE = 1
@@ -11,11 +12,12 @@ class ControlMode(Enum):
     SCHEDULE = 4
 
 
-_supervisorToken = os.environ.get("SUPERVISOR_TOKEN")
+_supervisorToken = os.getenv("SUPERVISOR_TOKEN")
 _headers = {
-    "Authorization": "Bearer " + _supervisorToken,
     "content-type": "application/json",
 }
+if (_supervisorToken != None):
+    _headers["Authorization"] = "Bearer " + _supervisorToken
 
 # https://developers.home-assistant.io/docs/api/rest/
 def _getHaState(entityId: str) -> str | None:
@@ -24,16 +26,28 @@ def _getHaState(entityId: str) -> str | None:
         Returns: State of the entity. If this is not allowed or fails it will return None.
     """
     if (_supervisorToken is None):
+        print("WARNING: No access token")
         return None
-    
+
     response = requests.get(
         "http://supervisor/core/api/states/" + entityId,
         headers = _headers
     )
     if response.status_code != 200:
         print("WARNING: Failed to get the state of '" + entityId + "'")
+        print(response.text)
         return None
     return response.json()["state"]
+
+def _getValue(entityId: str | None, map: Callable[[str], Any], fallback: Callable[[], Any]) -> Any:
+    try:
+        if (entityId != None):
+            state = _getHaState(entityId)
+            if (state != None):
+                return map(state)
+    finally:
+        return fallback()
+
 
 class Config:
     _settings = Dynaconf(
@@ -44,6 +58,7 @@ class Config:
         pass
 
     def getHost(self) -> str:
+        print(_getHaState("sensor.time"))
         return self._settings["host"]
 
     def getPort(self) -> int:
