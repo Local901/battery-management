@@ -58,7 +58,6 @@ class Config:
         pass
 
     def getHost(self) -> str:
-        print(_getHaState("sensor.time"))
         return self._settings["host"]
 
     def getPort(self) -> int:
