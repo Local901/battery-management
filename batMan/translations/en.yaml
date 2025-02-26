@@ -27,10 +27,11 @@ configuration:
   schedule:
     name: Schedule
     description: >-
-      Manually define a schedule the addon should follow. When the addon is started in ths schedule mode it will start from the first entry.
+      Manually define a schedule the addon should follow. When the addon is started in ths schedule mode it will start from the current time.
+       Anything that doesn't start with 'c' or 'd' or is equal to '0' will be skipped and the previous action will persist.
        |
-      Syntax: '<time: 1:00> <mode: [0,c,d]> [power: 0-...]'
+      Syntax: '<mode: [0,c,d]> [power: 0-...]'
       Examples:
-       none: '5:00 0' |
-       charge: '13:00 c 5000' |
-       discharge: '16:00 d 5000'
+       none: '0' |
+       charge: 'c 5000' |
+       discharge: 'd 5000'

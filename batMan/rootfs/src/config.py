@@ -4,6 +4,7 @@ import requests
 import os
 from enum import Enum
 from collections.abc import Callable
+from typing import Dict
 
 class ControlMode(Enum):
     NONE = 1
@@ -78,6 +79,37 @@ class Config:
 
     def getSchedule(self) -> list[str]:
         """ Get inputted schedule. syntax '<time 00:00> <action 0|c|d> [power int]' """
+        dict: Dict[str, str] = self._settings["schedule"]
+        currentTime = self.getCurrentTime()
+        schedule = []
+        prev = "0"
+        for key in sorted(dict.keys()):
+            day = key[1:2]
+            hour = int(key[3:])
+            # Add a extra action if no actions are taken in the current day.
+            if day == "1" and len(schedule) == 0:
+                schedule.append("23:50 " + prev)
+
+            value = dict.get(key)
+            
+            # change the next value when a valid action has been set.
+            if value[:1] == "c" or value[:1] == "d" or value == "0":
+                # skip when action didn't change
+                if value == prev:
+                    continue
+                prev = value
+            else:
+                continue
+
+            # Skip hours that are already passed
+            if "0" != day and currentTime.hour >= hour:
+                continue
+            elif len(schedule) == 0 and prev != "0":
+                # insert a action at the current time if a action should ave been taken previously.
+                schedule.append(currentTime.hour + ":" + currentTime.minute + " " + prev)
+
+            # append next scheduled action
+            schedule.append(hour + ":00 " + next)
         return self._settings["schedule"]
 
     def getCurrentTime(self) -> datetime:
