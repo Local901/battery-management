@@ -40,7 +40,7 @@ def _getHaState(entityId: str) -> str | None:
         return None
     return response.json()["state"]
 
-def _getValue(entityId: str | None, map: Callable[[str], Any], fallback: Callable[[], Any]) -> Any:
+def _getValue(entityId: str | None, map: Callable[[str], any], fallback: Callable[[], any]) -> any:
     try:
         if (entityId != None):
             state = _getHaState(entityId)
@@ -84,14 +84,16 @@ class Config:
         schedule = []
         prev = "0"
         for key in sorted(dict.keys()):
+            print(key)
+            print(dict.get(key))
             day = key[1:2]
             hour = int(key[3:])
-            # Add a extra action if no actions are taken in the current day.
-            if day == "1" and len(schedule) == 0:
+            # Add a extra action before the next day to prevent leaping.
+            if day == "1":
                 schedule.append("23:50 " + prev)
 
             value = dict.get(key)
-            
+
             # change the next value when a valid action has been set.
             if value[:1] == "c" or value[:1] == "d" or value == "0":
                 # skip when action didn't change
@@ -104,13 +106,15 @@ class Config:
             # Skip hours that are already passed
             if "0" != day and currentTime.hour >= hour:
                 continue
-            elif len(schedule) == 0 and prev != "0":
-                # insert a action at the current time if a action should ave been taken previously.
-                schedule.append(currentTime.hour + ":" + currentTime.minute + " " + prev)
+            elif len(schedule) <=1 and currentTime.hour >= hour:
+                # set first action at the current time if a action should have been taken previously.
+                schedule = [str(currentTime.hour) + ":" + str(currentTime.minute) + " " + prev]
+                continue
 
             # append next scheduled action
-            schedule.append(hour + ":00 " + next)
-        return self._settings["schedule"]
+            schedule.append(str(hour) + ":00 " + prev)
+        print(schedule) # TODO: Remove this print statement after test
+        return schedule
 
     def getCurrentTime(self) -> datetime:
         return datetime.now(
