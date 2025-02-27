@@ -45,15 +45,19 @@ def autoImplementation(client: ModbusClient):
     frames: list[TimeFrame] = []
     for value in config.getSchedule():
         frames.append(parseTimeFrame(value))
-    frames.insert(0, TimeFrame(currentTime(), '0'))
 
     currentFrameIndex = 0
+    frame: TimeFrame | None = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
+
+    if not (currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time if frame is not None else None)):
+        frames.insert(0, TimeFrame(currentTime(), '0'))
+
 
     print(f"TIME: {frames[currentFrameIndex].time}")
 
     # Loop
     while True:
-        frame: TimeFrame = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
+        frame = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
 
         if frame is None or frame.action == "0":
             sendToInverter(client, False, 0)
