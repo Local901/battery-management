@@ -84,8 +84,6 @@ class Config:
         schedule = []
         prev = "0"
         for key in sorted(dict.keys()):
-            print(key)
-            print(dict.get(key))
             day = key[1:2]
             hour = int(key[3:])
             # Add a extra action before the next day to prevent leaping.
@@ -113,7 +111,7 @@ class Config:
 
             # append next scheduled action
             schedule.append(str(hour) + ":00 " + prev)
-        print(schedule) # TODO: Remove this print statement after test
+        
         return schedule
 
     def getCurrentTime(self) -> datetime:
