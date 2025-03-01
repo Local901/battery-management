@@ -1,10 +1,11 @@
 from datetime import datetime, timezone, timedelta
+from typing import Any
 from dynaconf import Dynaconf
 import requests
 import os
 from enum import Enum
-from collections.abc import Callable
 from typing import Dict
+from hourPrices import HourPriceList, HourPrice
 
 class ControlMode(Enum):
     NONE = 1
@@ -21,11 +22,10 @@ if (_supervisorToken != None):
     _headers["Authorization"] = "Bearer " + _supervisorToken
 
 # https://developers.home-assistant.io/docs/api/rest/
-def _getHaState(entityId: str) -> str | None:
-    """ Get the state of an entity.
-
-        Returns: State of the entity. If this is not allowed or fails it will return None.
-    """
+def _getHaStateObject(entityId: str) -> Any | None:
+    if (entityId is None):
+        print("WARNING: Entity id is undefined.")
+        return None
     if (_supervisorToken is None):
         print("WARNING: No access token")
         return None
@@ -38,16 +38,23 @@ def _getHaState(entityId: str) -> str | None:
         print("WARNING: Failed to get the state of '" + entityId + "'")
         print(response.text)
         return None
-    return response.json()["state"]
+    return response.json()
 
-def _getValue(entityId: str | None, map: Callable[[str], any], fallback: Callable[[], any]) -> any:
-    try:
-        if (entityId != None):
-            state = _getHaState(entityId)
-            if (state != None):
-                return map(state)
-    finally:
-        return fallback()
+def _getHaState(entityId: str) -> str | None:
+    """ Get the state of an entity.
+
+        Returns: State of the entity. If this is not allowed or fails it will return None.
+    """
+    state = _getHaStateObject(entityId)
+    if (state == None):
+        return None
+    return state["state"]
+
+def _getHaAttributes(entityId: str) -> Any | None:
+    state = _getHaStateObject(entityId)
+    if (state == None):
+        return None
+    return state["attributes"]
 
 
 class Config:
@@ -120,5 +127,21 @@ class Config:
                 timedelta(hours=int(self._settings["timezone"]))
             )
         )
+    
+    def getHourPriceList(self) -> HourPriceList | None:
+        attributes = _getHaAttributes(self._settings["device_price_list"])
+        if (attributes is None): return None
+
+        prices = attributes["prices"]
+        if (prices is None): return None
+
+        priceList = HourPriceList()
+
+        for price in prices:
+            time = datetime.strptime(price["time"], "%Y-%m-%d %H:%M:%S%:z")
+            priceList.addPrice(HourPrice(time, price["price"]))
+
+        return priceList
+
 
 config = Config()

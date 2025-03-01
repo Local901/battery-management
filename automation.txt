@@ -1,0 +1,172 @@
+dynamic_control_bool: boolean
+dynamic_price_limit: float
+
+feedback_control_bool: boolean
+feedback_max_limit: int [-6000, -1] step 100
+feedback_min_limit: int [-6000, -1] step 100
+feedback_step: int [1, 100]
+
+sma_power_limit_slider: int [0,100] %
+
+automations:
+
+dynamic_control_inverter: {
+  trigger: [
+    new_price: current_elektricity_price_all_in changes
+    return_to_100: dynamic_control_bool changes from true -> false
+  ],
+  
+  dynamic_price_limit;
+  sma_slider_entity = input_number.sma_power_limit_slider;
+  dynamic_price = sensor.current_electricity_price_all_in ?? 0;
+
+  if (new_price || dynamic_control_bool || dynamic_price > dynamic_price_limit) {
+    sma_slider_entity* = dynamic_price > dynamic_price_limit
+      ? 100
+      : 0;
+  }
+
+  if (return_to_100) {
+    sma_slider_entity* = 100;
+  }
+}
+
+feedback_control_sma: {
+  trigger: [
+    feedback: sensor.p1_meter_active_power changes from null -> any other
+    return_to_100: dynamic_control_bool changes from true -> false
+  ]
+
+  if (feedback_control_bool) {
+    p_max = 1.5;
+    p_meter = sensor.p1_meter_active_power ?? 1.5;
+    sma = (sensor.sma_actueel ?? (1.5 * 1000)) / 1000;
+    input_number.power_limit_slider_sma = Mats.round(Math.minMax(0, (sma + p_meter)/(1.5/100), 100))
+  }
+  if (return_to_100) {
+    input_number.power_limit_slider_sma = 100
+  }
+}
+
+feedback_control_inverter: {
+  triggers: [
+    every 10 sec,
+    feedback_control_bool changes to true
+  ]
+
+  feedback_max_limit: feedback_max_limit;
+  feedback_min_limit: feedback_min_limit;
+  feedback_step: feedback_step;
+  sma_slider_entity1: input_number.power_limit_slider_sma_zb;
+  sma_slider_entity2: input_number.power_limit_slider_sma_zo;
+  sma_slider_entity3: input_number.power_limit_slider_sma_nrd;
+  grid_feedback: sensor.p1_meter_active_power ?? 0;
+
+  if (timeTigger || feedback_control_bool == "on" || grid_feedback < feedback_max_limit) {
+    sma_slider_entity1* = sma_slider_entity1 - feedback_step;
+    sma_slider_entity2* = sma_slider_entity2 - feedback_step;
+    sma_slider_entity3* = sma_slider_entity3 - feedback_step;
+  }
+
+  if (timeTigger || feedback_control_bool == "on" || grid_feedback > feedback_min_limit) {
+    sma_slider_entity1* = sma_slider_entity1 + feedback_step;
+    sma_slider_entity2* = sma_slider_entity2 + feedback_step;
+    sma_slider_entity3* = sma_slider_entity3 + feedback_step;
+  }
+
+  if (return_to_100) {
+    while (all sliders are <= 100) {
+      sma_slider_entity1* = sma_slider_entity1 + feedback_step;
+      sma_slider_entity2* = sma_slider_entity2 + feedback_step;
+      sma_slider_entity3* = sma_slider_entity3 + feedback_step;
+      sleep(10s);
+    }
+  }
+}
+
+modbus: {
+  let sensor.sma_actueel = modbus.get(30775, int32);
+  let sensor.sma_vandaag = modbus.get(30517, int64);
+  let sensor.sma_totaal = modbus.get(30531, int32);
+
+  let sensor.sma_ac_spanning = modbus.get(30783, int32, precision=2);
+  let sensor.sma_ac_frequentie = modbus.get(30803, int32, precision=2);
+
+  let sensor.sma_dc_spanning_1 = modbus.get(30771, int32);
+  let sensor.sma_dc_stroom_1 = modbus.get(30769, int32);
+  let sensor.sma_dc_power_1 = modbus.get(30773, int32);
+
+  let sensor.sma_dc_spanning_2 = modbus.get(30959, int32);
+  let sensor.sma_dc_stroom_2 = modbus.get(30957, int32);
+  let sensor.sma_dc_power_2 = modbus.get(30961, int32);
+
+  let sensor.sma_temperatuur = modbus.get(30953, int32);
+  let sensor.sma_isolatieweerstand = modbus.get(30225, int32);
+  let sensor.sma_aardlekkage = modbus.get(31247, int32);
+  let sensor.status = modbus.get(30201, int32);
+  let sensor.sma_grid = modbus.get(30217, int32);
+  let sensor.sma_limit_percent = modbus.get(41255, int32);
+
+
+
+  sma_power = (sensor.sma_actueel < 0 || sensor.sma_actueel ? 10000)
+    ? 0
+    : sensor.sma_actueel;
+
+  sma_energie_vandaag = (sensor.sma_vandaag < 0 || sensor.sma_vandaag > 10000)
+    ? 0
+    : sensor.sma_vandaag;
+
+  sma_inverter_status;
+  switch (sensor.sma_status) {
+    case 307:
+      sma_inverter_status = OK; break;
+    case 303:
+      sma_inverter_status = Uit; break;
+    case 455:
+      sma_inverter_status = Waarschuwing; break;
+    case 35:
+    default:
+      sma_inverter_status = Fout; break;
+  }
+
+  sma_grid_connector = sensor.sma_grid == 51
+    ? Gesloten
+    : Open
+
+  if (sma_power_limit_slider changed) {
+    modbus.write(sma_power_limit_slider);
+  }
+}
+
+https://github.com/fonske/SMA_inverter_logging/tree/main/Home_Assistant_yaml
+https://www.sciencedirect.com/science/article/pii/S2772671124003693
+https://github.com/WillemD61/battery-planning
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
