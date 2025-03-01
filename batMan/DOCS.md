@@ -18,12 +18,13 @@ This mode takes control away from the transformer and forces it to discharge up 
 
 ### Mode: Schedule (24h clock)
 
-This mode uses a schedule to time control changes that have been configured beforehand. __It always starts from the first item in the schedule.__ It starts with mode `none`.
+This mode uses a schedule to time control changes that have been configured beforehand. It starts at the current time with the action that was configured last if no action was configured it will start in mode `none`.
 
 The schedule will trigger the next item on the schedule when the time has passed.
 
 #### Syntax:
 
-* None: `<time: 00:00> 0` EG `13:15 0`
-* Charge: `<time: 00:00> c <power>` EG `13:15 c 1500`
-* Discharge: `<time: 00:00> d <power>` EG `13:15 d 1500`
+* None: `0` EG `d0h13: 0`
+* Charge: `c <power>` EG `d0h13: c 1500`
+* Discharge: `d <power>` EG `d0h13: d 1500`
+* Anything that doesn't match previous actions will be ignored.
