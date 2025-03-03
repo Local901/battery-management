@@ -1,5 +1,10 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 2.0.3
+
+- Fix schedule implementation
+  - allow 'o' or 'O' to be used together with '0'
+
 ### 2.0.2
 
 - Remove testing prints
