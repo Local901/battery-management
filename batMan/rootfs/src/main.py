@@ -1,7 +1,6 @@
 from modbus import ModbusClient
 from config import config, ControlMode
 from customTime import currentTime
-from schedule import TimeFrame, parseTimeFrame
 import time
 
 def sendToInverter(
@@ -42,40 +41,38 @@ def autoImplementation(client: ModbusClient):
 
     Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
-    frames: list[TimeFrame] = []
-    for value in config.getSchedule():
-        frames.append(parseTimeFrame(value))
-
-    currentFrameIndex = 0
-    frame: TimeFrame | None = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
-
-    if not (currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time if frame is not None else None)):
-        frames.insert(0, TimeFrame(currentTime(), '0'))
-
-
-    print(f"TIME: {frames[currentFrameIndex].time}")
-
+    startTime = config.getCurrentTime()
+    schedule = config.getSchedule()
+    previousAction = None
+    previousKey = None
     # Loop
     while True:
-        frame = frames[currentFrameIndex] if currentFrameIndex >= 0 else None
+        currentTime = config.getCurrentTime()
+        day = currentTime.day - startTime.day
+        hour = currentTime.hour
+        key = f"d{day}h{hour:02}"
+        currentAction = schedule.get(key)
 
-        if frame is None or frame.action == "0":
+        # print hour marks to show progress
+        if key != previousKey:
+            print(f"Current Time: day {day} {currentTime.hour}:00")
+            previousKey = key
+
+        if currentAction == None:
             sendToInverter(client, False, 0)
-        elif frame.action == "c":
-            sendToInverter(client, True, frame.power if frame.power > 10 else 5000)
-        elif frame.action == "d":
-            sendToInverter(client, True, -1 * (frame.power if frame.power > 10 else 5000))
+            print("Schedule has ended. Restart addon to restart the schedule")
+        elif previousAction != currentAction:
+            if currentAction.action == "none":
+                sendToInverter(client, False, 0)
+            elif currentAction.action == "charge":
+                sendToInverter(client, True, currentAction.power if currentAction.power > 10 else 5000)
+            else:
+                sendToInverter(client, True, -1 * (currentAction.power if currentAction.power > 10 else 5000))
 
-        if currentFrameIndex < (len(frames) - 1) and frames[currentFrameIndex + 1].time.isBeforeNow(frame.time if frame is not None else None):
-            print(f"TIME: {frames[currentFrameIndex + 1].time}")
-            currentFrameIndex += 1
-
-        if currentFrameIndex >= (len(frames) - 1):
-            print("Automated schedule has finished. Restart addon to restart the schedule.")
-            print("Last scheduled action will be active until restart.")
+            previousAction = currentAction
 
         # Sleep for half a minute before starting the next round.
-        time.sleep(30)
+        time.sleep(60)
 
 def main():
     client = ModbusClient()
