@@ -5,6 +5,7 @@ import os
 from enum import Enum
 from collections.abc import Callable
 from typing import Dict
+from schedule import Action
 
 class ControlMode(Enum):
     NONE = 1
@@ -77,41 +78,33 @@ class Config:
         modeValue = str(self._settings["control_mode"]).upper()
         return ControlMode[modeValue]
 
-    def getSchedule(self) -> list[str]:
-        """ Get inputted schedule. syntax '<time 00:00> <action 0|c|d> [power int]' """
+    def getSchedule(self) -> Dict[str, Action]:
+        """ Get list of time stamped actions. """
         dict: Dict[str, str] = self._settings["schedule"]
-        currentTime = self.getCurrentTime()
-        schedule = []
-        prev = "0"
+        schedule = {}
+        prev = Action("none", 0)
         for key in sorted(dict.keys()):
-            day = key[1:2]
-            hour = int(key[3:])
-            # Add a extra action before the next day to prevent leaping.
-            if day == "1":
-                schedule.append("23:50 " + prev)
-
-            value = dict.get(key)
-
-            # change the next value when a valid action has been set.
-            if value[:1] == "c" or value[:1] == "d" or value == "0":
-                # skip when action didn't change
-                if value == prev:
-                    continue
-                prev = value
+            value = dict.get(key).strip()
+            if value == "0" or value.lower() == "o":
+                schedule[key] = Action("none", 0)
+            elif value.startswith("c"):
+                [action, power] = value.split(" ")
+                power = int(power)
+                if power < 0:
+                    action = "d"
+                    power = abs(power)
+                schedule[key] = Action("charge" if action == "c" else "discharge", power)
+            elif value.startswith("d"):
+                [action, power] = value.split(" ")
+                power = int(power)
+                if power < 0:
+                    action = "c"
+                    power = abs(power)
+                schedule[key] = Action("charge" if action == "c" else "discharge", power)
             else:
-                continue
+                schedule[key] = prev
+            prev = schedule[key]
 
-            # Skip hours that are already passed
-            if "0" != day and currentTime.hour >= hour:
-                continue
-            elif len(schedule) <=1 and currentTime.hour >= hour:
-                # set first action at the current time if a action should have been taken previously.
-                schedule = [str(currentTime.hour) + ":" + str(currentTime.minute) + " " + prev]
-                continue
-
-            # append next scheduled action
-            schedule.append(str(hour) + ":00 " + prev)
-        
         return schedule
 
     def getCurrentTime(self) -> datetime:
