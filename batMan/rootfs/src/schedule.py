@@ -1,14 +1,15 @@
 
 class Action():
-    action = "none"
     power = 0
 
-    def __init__(self, action: str, power: int):
-        if (power != 0):
-            self.action = action
+    def __init__(self, power: int):
         self.power = power
 
     def __str__(self):
-        return f"{self.action} => {self.power}"
+        if self.power == 0:
+            return "None"
+        if self.power > 0:
+            return f"Charge => {self.power}"
+        return f"Discharge => {self.power}"
     def __repr__(self):
-        return f"{self.action} => {self.power}"
+        return self.__str__()

@@ -24,7 +24,7 @@ The schedule will trigger the next item on the schedule when the time has passed
 
 #### Syntax:
 
-* None: `0` EG `d0h13: 0`
+* None: `0` EG `d0h13: 0` or `doh13: o`
 * Charge: `c <power>` EG `d0h13: c 1500`
 * Discharge: `d <power>` EG `d0h13: d 1500`
 * Anything that doesn't match previous actions will be ignored.
