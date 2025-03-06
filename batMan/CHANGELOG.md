@@ -1,5 +1,10 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 2.0.4
+
+- Re-enable resubmitting of modbus states.
+- calculate day correctly
+
 ### 2.0.3
 
 - Fix schedule implementation

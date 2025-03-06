@@ -90,17 +90,11 @@ class Config:
             elif value.startswith("c"):
                 [action, power] = value.split(" ")
                 power = int(power)
-                if power < 0:
-                    action = "d"
-                    power = abs(power)
-                schedule[key] = Action("charge" if action == "c" else "discharge", power)
+                schedule[key] = Action(power)
             elif value.startswith("d"):
                 [action, power] = value.split(" ")
                 power = int(power)
-                if power < 0:
-                    action = "c"
-                    power = abs(power)
-                schedule[key] = Action("charge" if action == "c" else "discharge", power)
+                schedule[key] = Action(-power)
             else:
                 schedule[key] = prev
             prev = schedule[key]

@@ -2,6 +2,7 @@ from modbus import ModbusClient
 from config import config, ControlMode
 from customTime import currentTime
 import time
+from datetime import datetime
 
 def sendToInverter(
     client: ModbusClient,
@@ -42,13 +43,14 @@ def autoImplementation(client: ModbusClient):
     Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
     startTime = config.getCurrentTime()
+    startDay = datetime(startTime.year, startTime.month, startTime.day, tzinfo=startTime.tzinfo)
     schedule = config.getSchedule()
-    previousAction = None
     previousKey = None
+
     # Loop
     while True:
         currentTime = config.getCurrentTime()
-        day = currentTime.day - startTime.day
+        day = (currentTime - startDay).days
         hour = currentTime.hour
         key = f"d{day}h{hour:02}"
         currentAction = schedule.get(key)
@@ -61,15 +63,11 @@ def autoImplementation(client: ModbusClient):
         if currentAction == None:
             sendToInverter(client, False, 0)
             print("Schedule has ended. Restart addon to restart the schedule")
-        elif previousAction != currentAction:
+        else:
             if currentAction.action == "none":
                 sendToInverter(client, False, 0)
-            elif currentAction.action == "charge":
-                sendToInverter(client, True, currentAction.power if currentAction.power > 10 else 5000)
             else:
-                sendToInverter(client, True, -1 * (currentAction.power if currentAction.power > 10 else 5000))
-
-            previousAction = currentAction
+                sendToInverter(client, True, currentAction.power)
 
         # Sleep for half a minute before starting the next round.
         time.sleep(60)
