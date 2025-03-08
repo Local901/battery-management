@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "2.1.0"
+version: "3.0.0"
 slug: batman
 description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
@@ -21,111 +21,64 @@ options:
   timezone: 0
   delay: 2
   timeout: 5
+  minChargePercentage: 0
   control_mode: none
-  loopSchedule: false
   schedule:
-    d0h00: .
-    d0h01: .
-    d0h02: .
-    d0h03: .
-    d0h04: .
-    d0h05: .
-    d0h06: .
-    d0h07: .
-    d0h08: .
-    d0h09: .
-    d0h10: .
-    d0h11: .
-    d0h12: .
-    d0h13: .
-    d0h14: .
-    d0h15: .
-    d0h16: .
-    d0h17: .
-    d0h18: .
-    d0h19: .
-    d0h20: .
-    d0h21: .
-    d0h22: .
-    d0h23: .
-    d1h00: .
-    d1h01: .
-    d1h02: .
-    d1h03: .
-    d1h04: .
-    d1h05: .
-    d1h06: .
-    d1h07: .
-    d1h08: .
-    d1h09: .
-    d1h10: .
-    d1h11: .
-    d1h12: .
-    d1h13: .
-    d1h14: .
-    d1h15: .
-    d1h16: .
-    d1h17: .
-    d1h18: .
-    d1h19: .
-    d1h20: .
-    d1h21: .
-    d1h22: .
-    d1h23: .
+    h00: o
+    h01: o
+    h02: o
+    h03: o
+    h04: o
+    h05: o
+    h06: o
+    h07: o
+    h08: o
+    h09: o
+    h10: o
+    h11: o
+    h12: o
+    h13: o
+    h14: o
+    h15: o
+    h16: o
+    h17: o
+    h18: o
+    h19: o
+    h20: o
+    h21: o
+    h22: o
+    h23: o
 schema:
   host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
   port: "int(0,65535)"
   timezone: "int"
   delay: "int(1,)"
   timeout: "int"
+  minChargePercentage: "int(0,100)"
   control_mode: "list(none|charge|discharge|schedule)"
-  loopSchedule: "bool"
   schedule:
-    d0h00: "str"
-    d0h01: "str"
-    d0h02: "str"
-    d0h03: "str"
-    d0h04: "str"
-    d0h05: "str"
-    d0h06: "str"
-    d0h07: "str"
-    d0h08: "str"
-    d0h09: "str"
-    d0h10: "str"
-    d0h11: "str"
-    d0h12: "str"
-    d0h13: "str"
-    d0h14: "str"
-    d0h15: "str"
-    d0h16: "str"
-    d0h17: "str"
-    d0h18: "str"
-    d0h19: "str"
-    d0h20: "str"
-    d0h21: "str"
-    d0h22: "str"
-    d0h23: "str"
-    d1h00: "str"
-    d1h01: "str"
-    d1h02: "str"
-    d1h03: "str"
-    d1h04: "str"
-    d1h05: "str"
-    d1h06: "str"
-    d1h07: "str"
-    d1h08: "str"
-    d1h09: "str"
-    d1h10: "str"
-    d1h11: "str"
-    d1h12: "str"
-    d1h13: "str"
-    d1h14: "str"
-    d1h15: "str"
-    d1h16: "str"
-    d1h17: "str"
-    d1h18: "str"
-    d1h19: "str"
-    d1h20: "str"
-    d1h21: "str"
-    d1h22: "str"
-    d1h23: "str"
+    h00: "str"
+    h01: "str"
+    h02: "str"
+    h03: "str"
+    h04: "str"
+    h05: "str"
+    h06: "str"
+    h07: "str"
+    h08: "str"
+    h09: "str"
+    h10: "str"
+    h11: "str"
+    h12: "str"
+    h13: "str"
+    h14: "str"
+    h15: "str"
+    h16: "str"
+    h17: "str"
+    h18: "str"
+    h19: "str"
+    h20: "str"
+    h21: "str"
+    h22: "str"
+    h23: "str"
+  chargeState: "device?"

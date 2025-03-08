@@ -22,14 +22,17 @@ if (_supervisorToken != None):
     _headers["Authorization"] = "Bearer " + _supervisorToken
 
 # https://developers.home-assistant.io/docs/api/rest/
-def _getHaState(entityId: str) -> str | None:
+def _getHaState(entityId: str, default: str | None = None) -> str | None:
     """ Get the state of an entity.
 
         Returns: State of the entity. If this is not allowed or fails it will return None.
     """
     if (_supervisorToken is None):
         print("WARNING: No access token")
-        return None
+        return default
+
+    if entityId is None:
+        return default
 
     response = requests.get(
         "http://supervisor/core/api/states/" + entityId,
@@ -38,7 +41,7 @@ def _getHaState(entityId: str) -> str | None:
     if response.status_code != 200:
         print("WARNING: Failed to get the state of '" + entityId + "'")
         print(response.text)
-        return None
+        return default
     return response.json()["state"]
 
 def _getValue(entityId: str | None, map: Callable[[str], any], fallback: Callable[[], any]) -> any:
@@ -73,6 +76,14 @@ class Config:
         """ Timeout in seconds between requests. """
         return int(self._settings["timeout"])
 
+    def getMinChargePercentage(self) -> int:
+        """ Minimum charge percentage to enable discharge. """
+        return int(self._settings["minChargePercentage"])
+
+    def getChargePercentage(self) -> int:
+        """ Get current charge percentage of the battery from HA. """
+        return int(_getHaState(self._settings.get("chargeState"), "50"))
+
     def getControlMode(self) -> type[ControlMode]:
         """ Get the control mode. Defaults to None. """
         modeValue = str(self._settings["control_mode"]).upper()
@@ -82,12 +93,9 @@ class Config:
         """ Get list of time stamped actions. """
         dict: Dict[str, str] = self._settings["schedule"]
         schedule = {}
-        prev = Action("none", 0)
         for key in sorted(dict.keys()):
             value = dict.get(key).strip()
-            if value == "0" or value.lower() == "o":
-                schedule[key] = Action("none", 0)
-            elif value.startswith("c"):
+            if value.startswith("c"):
                 [action, power] = value.split(" ")
                 power = int(power)
                 schedule[key] = Action(power)
@@ -96,11 +104,10 @@ class Config:
                 power = int(power)
                 schedule[key] = Action(-power)
             else:
-                schedule[key] = prev
-            prev = schedule[key]
+                schedule[key] = Action(0)
 
         return schedule
-    
+
     def getIsScheduleLoop(self) -> bool:
         """ Get the flag for if the schedule should loop back to day 0 after day 1. """
         return bool(self._settings["loopSchedule"])
