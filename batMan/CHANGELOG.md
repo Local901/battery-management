@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 3.0.1
+
+- Fix config
+
 ## 3.0.0
 
 - Update schedule.
