@@ -25,17 +25,14 @@ configuration:
       - discharge: Discharge the battery with a value of 5000.
       - schedule: Follow the schedule from start to finish.
   
-  loopSchedule:
-    name: Loop schedule
-    description: Flag to indicate if the schedule should role back to day 0 if day one has passed.
   schedule:
     name: Schedule
     description: |
       Manually define a schedule the addon should follow. When the addon is started in ths schedule mode it will start from the current time.
-      Anything that doesn't start with 'c' or 'd' or is equal to '0' will be skipped and the previous action will persist.
+      Anything that doesn't start with 'c' or 'd' will be set to None.
       
-      Syntax: '<mode: [0,c,d]> [power: 0-...]'
+      Syntax: '<mode: [c,d]> [power: 0-...] | *'
       Examples:
-      - none: '0'
+      - none: 'anything that doesn't start with c or d'
       - charge: 'c 5000'
       - discharge: 'd 5000'

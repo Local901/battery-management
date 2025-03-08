@@ -82,12 +82,9 @@ class Config:
         """ Get list of time stamped actions. """
         dict: Dict[str, str] = self._settings["schedule"]
         schedule = {}
-        prev = Action("none", 0)
         for key in sorted(dict.keys()):
             value = dict.get(key).strip()
-            if value == "0" or value.lower() == "o":
-                schedule[key] = Action("none", 0)
-            elif value.startswith("c"):
+            if value.startswith("c"):
                 [action, power] = value.split(" ")
                 power = int(power)
                 schedule[key] = Action(power)
@@ -96,8 +93,7 @@ class Config:
                 power = int(power)
                 schedule[key] = Action(-power)
             else:
-                schedule[key] = prev
-            prev = schedule[key]
+                schedule[key] = Action(0)
 
         return schedule
     

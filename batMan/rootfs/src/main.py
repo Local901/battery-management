@@ -35,31 +35,25 @@ def sendToInverter(
     return
 
 
-def autoImplementation(client: ModbusClient):
+def scheduleImplementation(client: ModbusClient):
     """
     ### Automate a schedule
 
     Will read a schedule in from setting.schedule(: str[]) and execute the expected actions following the schedule.
     """
-    startTime = config.getCurrentTime()
-    startDay = datetime(startTime.year, startTime.month, startTime.day, tzinfo=startTime.tzinfo)
     schedule = config.getSchedule()
     previousKey = None
-    loopSchedule = config.getIsScheduleLoop()
 
     # Loop
     while True:
         currentTime = config.getCurrentTime()
-        day = (currentTime - startDay).days
-        if loopSchedule:
-            day %= 2
         hour = currentTime.hour
-        key = f"d{day}h{hour:02}"
+        key = f"h{hour:02}"
         currentAction = schedule.get(key)
 
         # print hour marks to show progress
         if key != previousKey:
-            print(f"Current Time: day {day} {currentTime.hour}:00")
+            print(f"Current Time: {currentTime.hour}:00")
             previousKey = key
 
         if currentAction == None:
@@ -87,7 +81,7 @@ def main():
         elif mode == ControlMode.DISCHARGE:
             sendToInverter(client, True, -5000)
         elif mode == ControlMode.SCHEDULE:
-            autoImplementation(client)
+            scheduleImplementation(client)
         else:
             raise Exception("Unknown control mode \"" + mode.name + '"')
     finally:
