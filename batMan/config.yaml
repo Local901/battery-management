@@ -21,6 +21,7 @@ options:
   timezone: 0
   delay: 2
   timeout: 5
+  minChargePercentage: 0
   control_mode: none
   schedule:
     h00: o
@@ -53,6 +54,7 @@ schema:
   timezone: "int"
   delay: "int(1,)"
   timeout: "int"
+  minChargePercentage: "int(0,100)"
   control_mode: "list(none|charge|discharge|schedule)"
   schedule:
     h00: "str"
@@ -79,4 +81,4 @@ schema:
     h21: "str"
     h22: "str"
     h23: "str"
-  
+  chargeState: "device?"

@@ -16,6 +16,10 @@ configuration:
     name: Message timeout
     description: The time between 2 modbus requests if they are send directly after one another.
 
+  minChargePercentage:
+    name: Minimum charge % in the battery
+    description: Minimum charge that the battery has to have to be able to discharge via the addon.
+
   control_mode:
     name: Control mode
     description: |
