@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 2.1.0
+
+- Add the option to loop the schedule.
+
 ### 2.0.4
 
 - Re-enable resubmitting of modbus states.

@@ -1,6 +1,5 @@
 from modbus import ModbusClient
 from config import config, ControlMode
-from customTime import currentTime
 import time
 from datetime import datetime
 
@@ -46,11 +45,14 @@ def autoImplementation(client: ModbusClient):
     startDay = datetime(startTime.year, startTime.month, startTime.day, tzinfo=startTime.tzinfo)
     schedule = config.getSchedule()
     previousKey = None
+    loopSchedule = config.getIsScheduleLoop()
 
     # Loop
     while True:
         currentTime = config.getCurrentTime()
         day = (currentTime - startDay).days
+        if loopSchedule:
+            day %= 2
         hour = currentTime.hour
         key = f"d{day}h{hour:02}"
         currentAction = schedule.get(key)

@@ -100,6 +100,10 @@ class Config:
             prev = schedule[key]
 
         return schedule
+    
+    def getIsScheduleLoop(self) -> bool:
+        """ Get the flag for if the schedule should loop back to day 0 after day 1. """
+        return bool(self._settings["loopSchedule"])
 
     def getCurrentTime(self) -> datetime:
         return datetime.now(

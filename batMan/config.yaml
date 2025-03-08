@@ -22,6 +22,7 @@ options:
   delay: 2
   timeout: 5
   control_mode: none
+  loopSchedule: false
   schedule:
     d0h00: .
     d0h01: .
@@ -78,6 +79,7 @@ schema:
   delay: "int(1,)"
   timeout: "int"
   control_mode: "list(none|charge|discharge|schedule)"
+  loopSchedule: "bool"
   schedule:
     d0h00: "str"
     d0h01: "str"
