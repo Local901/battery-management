@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Battery manager
-version: "2.0.4"
+version: "2.1.0"
 slug: batman
 description: Manage your home batteries.
 url: "https://github.com/Local901/battery-management/"
@@ -22,6 +22,7 @@ options:
   delay: 2
   timeout: 5
   control_mode: none
+  loopSchedule: false
   schedule:
     d0h00: .
     d0h01: .
@@ -78,6 +79,7 @@ schema:
   delay: "int(1,)"
   timeout: "int"
   control_mode: "list(none|charge|discharge|schedule)"
+  loopSchedule: "bool"
   schedule:
     d0h00: "str"
     d0h01: "str"
