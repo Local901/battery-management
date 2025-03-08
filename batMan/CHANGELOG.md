@@ -5,6 +5,7 @@
 - Update schedule.
   - Auto loop schedule.
   - Default to none.
+- Discharge limit
 
 ### 2.1.0
 
