@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 3.0.2
+
+- Fix discharge limit
+
 ### 3.0.1
 
 - Fix config
