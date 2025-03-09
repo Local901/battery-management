@@ -17,7 +17,7 @@ def sendToInverter(
     **rendament**: The wanted rendament of the inverter to the battery
     """
 
-    if (not active) or rendament == 0 or config.getMinChargePercentage() >= config.getChargePercentage():
+    if (not active) or rendament == 0 or (rendament < 0 and config.getMinChargePercentage() >= config.getChargePercentage()):
         print("ACTION: Release control.")
         client.writeRegisters(40149, [0, 0], slave=3)
         client.writeRegisters(40151, [0, 803], slave=3)
