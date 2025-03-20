@@ -62,6 +62,33 @@ class Config:
     def __init__(self):
         pass
 
+    def _parseScheduleAction(self, planning: str) -> Dict[str, any]:
+        result = {}
+        split = planning.strip().split()
+        index = 0
+        while index < len(split):
+            try:
+                match split[index].lower():
+                    case "c": # charge with i + 1
+                        result.action = Action(int(split[index + 1]))
+                        index += 1
+                    case "d": # discharge with i + 1
+                        result.action = Action(-int(split[index + 1]))
+                        index += 1
+                    case "mcp":
+                        result.minimumChargePercentage = min(
+                            0,
+                            max(
+                                int(split[index + 1]),
+                                100
+                            )
+                        )
+                        index += 1
+            finally:
+                index += 1
+        
+
+
     def getHost(self) -> str:
         return self._settings["host"]
 
@@ -78,7 +105,10 @@ class Config:
 
     def getMinChargePercentage(self) -> int:
         """ Minimum charge percentage to enable discharge. """
-        return int(self._settings["minChargePercentage"])
+        key = f"{self.getCurrentTime().hour:02}"
+        return self._parseScheduleAction(
+            self._settings["schedule"].get(key, "")
+        ).get("minimumChargePercentage", int(self._settings["minChargePercentage"]))
 
     def getChargePercentage(self) -> int:
         """ Get current charge percentage of the battery from HA. """
@@ -94,17 +124,7 @@ class Config:
         dict: Dict[str, str] = self._settings["schedule"]
         schedule = {}
         for key in sorted(dict.keys()):
-            value = dict.get(key).strip()
-            if value.startswith("c"):
-                [action, power] = value.split(" ")
-                power = int(power)
-                schedule[key] = Action(power)
-            elif value.startswith("d"):
-                [action, power] = value.split(" ")
-                power = int(power)
-                schedule[key] = Action(-power)
-            else:
-                schedule[key] = Action(0)
+            schedule[key] = self._parseScheduleAction(dict.get(key, "")).get("action", Action(0))
 
         return schedule
 
