@@ -18,13 +18,16 @@ This mode takes control away from the transformer and forces it to discharge up 
 
 ### Mode: Schedule (24h clock)
 
-This mode uses a schedule to time control changes that have been configured beforehand. It starts at the current time with the action that was configured last if no action was configured it will start in mode `none`.
+This mode uses a schedule to time control changes that have been configured beforehand. It is a record of every hour of the day. For each hour you can define which action should be taken. Below you will see how to define a action for a given hour. **All options can be stacked one after the other to be bale to define more than one at the time.**
 
-The schedule will trigger the next item on the schedule when the time has passed.
+#### charge option
 
-#### Syntax:
+* Charging is indicated by a `c` followed by the number of watt you want to charge. If it is negative it will discharge.
+  * `c 5000`
+* Discharge is indicated ba a `d` followed by the number of watt you want to discharge. If it is negative it will charge.
+  * `d 5000`
+* If nothing related to charging has been defined it will default to mode `None` and will free the inverter to do what it wants. This is also achievable by charging or discharging with 0 watt.
 
-* None: `0` EG `d0h13: 0` or `doh13: o`
-* Charge: `c <power>` EG `d0h13: c 1500`
-* Discharge: `d <power>` EG `d0h13: d 1500`
-* Anything that doesn't match previous actions will be ignored.
+#### Minimum charge percentage
+
+* This is a way to overwrite the minimum discharge percentage for a given hour. This action is indicated by `mcp` followed by the percentage that you would fill in in another field in the configuration of this addon. This value is bounded from 0 to 100. Going outside this range will automatically set it to the closest in bound value.
