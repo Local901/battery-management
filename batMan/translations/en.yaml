@@ -32,11 +32,4 @@ configuration:
   schedule:
     name: Schedule
     description: |
-      Manually define a schedule the addon should follow. When the addon is started in ths schedule mode it will start from the current time.
-      Anything that doesn't start with 'c' or 'd' will be set to None.
-      
-      Syntax: '<mode: [c,d]> [power: 0-...] | *'
-      Examples:
-      - none: 'anything that doesn't start with c or d'
-      - charge: 'c 5000'
-      - discharge: 'd 5000'
+      Manually define a schedule the addon should follow. The addon will follow the action defined for the current hour. For more info on how to define a action please go the documentation page.
