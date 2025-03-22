@@ -70,13 +70,13 @@ class Config:
             try:
                 match split[index].lower():
                     case "c": # charge with i + 1
-                        result.action = Action(int(split[index + 1]))
+                        result["action"] = Action(int(split[index + 1]))
                         index += 1
                     case "d": # discharge with i + 1
-                        result.action = Action(-int(split[index + 1]))
+                        result["action"] = Action(-int(split[index + 1]))
                         index += 1
                     case "mcp":
-                        result.minimumChargePercentage = min(
+                        result["minimumChargePercentage"] = min(
                             0,
                             max(
                                 int(split[index + 1]),
