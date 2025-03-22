@@ -86,7 +86,7 @@ class Config:
                         index += 1
             finally:
                 index += 1
-        
+        return result
 
 
     def getHost(self) -> str:

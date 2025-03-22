@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 3.1.1
+
+- Fix code
+
 ## 3.1.0
 
 - Add minimum charge limit to schedule.
