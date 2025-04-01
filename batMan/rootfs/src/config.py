@@ -76,9 +76,9 @@ class Config:
                         result["action"] = Action(-int(split[index + 1]))
                         index += 1
                     case "mcp":
-                        result["minimumChargePercentage"] = min(
+                        result["minimumChargePercentage"] = max(
                             0,
-                            max(
+                            min(
                                 int(split[index + 1]),
                                 100
                             )
