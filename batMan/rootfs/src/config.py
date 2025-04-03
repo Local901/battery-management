@@ -105,10 +105,11 @@ class Config:
 
     def getMinChargePercentage(self) -> int:
         """ Minimum charge percentage to enable discharge. """
-        key = f"{self.getCurrentTime().hour:02}"
-        return self._parseScheduleAction(
+        key = f"h{self.getCurrentTime().hour:02}"
+        scheduleAction = self._parseScheduleAction(
             self._settings["schedule"].get(key, "")
-        ).get("minimumChargePercentage", int(self._settings["minChargePercentage"]))
+        )
+        return scheduleAction.get("minimumChargePercentage", int(self._settings["minChargePercentage"]))
 
     def getChargePercentage(self) -> int:
         """ Get current charge percentage of the battery from HA. """

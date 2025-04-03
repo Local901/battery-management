@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+### 3.1.4
+
+- Fix schedule retrieval in minimum charge percentage config.
+
 ### 3.1.3
 
 - Fix mcp handle code. It forced it to 0 if present in the schedule.
