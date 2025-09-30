@@ -24,30 +24,54 @@ options:
   minChargePercentage: 0
   control_mode: none
   schedule:
-    h00: o
-    h01: o
-    h02: o
-    h03: o
-    h04: o
-    h05: o
-    h06: o
-    h07: o
-    h08: o
-    h09: o
-    h10: o
-    h11: o
-    h12: o
-    h13: o
-    h14: o
-    h15: o
-    h16: o
-    h17: o
-    h18: o
-    h19: o
-    h20: o
-    h21: o
-    h22: o
-    h23: o
+    h00:
+      m00: o
+    h01:
+      m00: o
+    h02:
+      m00: o
+    h03:
+      m00: o
+    h04:
+      m00: o
+    h05:
+      m00: o
+    h06:
+      m00: o
+    h07:
+      m00: o
+    h08:
+      m00: o
+    h09:
+      m00: o
+    h10:
+      m00: o
+    h11:
+      m00: o
+    h12:
+      m00: o
+    h13:
+      m00: o
+    h14:
+      m00: o
+    h15:
+      m00: o
+    h16:
+      m00: o
+    h17:
+      m00: o
+    h18:
+      m00: o
+    h19:
+      m00: o
+    h20:
+      m00: o
+    h21:
+      m00: o
+    h22:
+      m00: o
+    h23:
+      m00: o
 schema:
   host: "match(^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$)"
   port: "int(0,65535)"
@@ -57,28 +81,124 @@ schema:
   minChargePercentage: "int(0,100)"
   control_mode: "list(none|charge|discharge|schedule)"
   schedule:
-    h00: "str"
-    h01: "str"
-    h02: "str"
-    h03: "str"
-    h04: "str"
-    h05: "str"
-    h06: "str"
-    h07: "str"
-    h08: "str"
-    h09: "str"
-    h10: "str"
-    h11: "str"
-    h12: "str"
-    h13: "str"
-    h14: "str"
-    h15: "str"
-    h16: "str"
-    h17: "str"
-    h18: "str"
-    h19: "str"
-    h20: "str"
-    h21: "str"
-    h22: "str"
-    h23: "str"
+    h00:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h01:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h02:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h03:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h04:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h05:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h06:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h07:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h08:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h09:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h10:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h11:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h12:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h13:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h14:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h15:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h16:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h17:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h18:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h19:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h20:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h21:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h22:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
+    h23:
+      m00: "str"
+      m15: "str?"
+      m30: "str?"
+      m45: "str?"
   chargeState: "str?"

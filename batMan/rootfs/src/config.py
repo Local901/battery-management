@@ -120,12 +120,17 @@ class Config:
         modeValue = str(self._settings["control_mode"]).upper()
         return ControlMode[modeValue]
 
-    def getSchedule(self) -> Dict[str, Action]:
+    def getSchedule(self) -> Dict[str, Dict[str, Action]]:
         """ Get list of time stamped actions. """
-        dict: Dict[str, str] = self._settings["schedule"]
+        dict: Dict[str, Dict[str, str]] = self._settings["schedule"]
         schedule = {}
         for key in sorted(dict.keys()):
-            schedule[key] = self._parseScheduleAction(dict.get(key, "")).get("action", Action(0))
+            minuteSchedule = {}
+            lastAction = Action(0)
+            for minuteKey in ["m00", "m15", "m30", "m45"]:
+                lastAction = self._parseScheduleAction(dict.get(key, "").get(minuteKey, "")).get("action", lastAction)
+                minuteSchedule[minuteKey] 
+            schedule[key] = minuteSchedule
 
         return schedule
 

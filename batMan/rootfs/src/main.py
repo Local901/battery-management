@@ -1,6 +1,7 @@
 from modbus import ModbusClient
 from config import config, ControlMode
 import time
+import math
 
 def sendToInverter(
     client: ModbusClient,
@@ -47,13 +48,17 @@ def scheduleImplementation(client: ModbusClient):
     while True:
         currentTime = config.getCurrentTime()
         hour = currentTime.hour
+        minutes = math.floor(currentTime.minute / 15) * 15
         key = f"h{hour:02}"
-        currentAction = schedule.get(key)
+        minuteKey = f"m{minutes:02}"
+        currentAction = schedule.get(key).get(minuteKey)
+
+        if f"{key}{minuteKey}" == previousKey:
+            continue
 
         # print hour marks to show progress
-        if key != previousKey:
-            print(f"Current Time: {currentTime.hour}:00")
-            previousKey = key
+        print(f"Current Time: {currentTime.hour}:{minutes:02}")
+        previousKey = f"{key}{minuteKey}"
 
         if currentAction == None:
             sendToInverter(client, False, 0)
