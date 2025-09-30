@@ -6,6 +6,7 @@ from enum import Enum
 from collections.abc import Callable
 from typing import Dict
 from schedule import Action
+import math
 
 class ControlMode(Enum):
     NONE = 1
@@ -59,11 +60,16 @@ class Config:
         settings_files=["/data/options.json"],
     )
 
+    _schedule: Dict[str, Dict[str, Action]] = None
+
     def __init__(self):
         pass
 
-    def _parseScheduleAction(self, planning: str) -> Dict[str, any]:
-        result = {}
+    def _parseScheduleAction(self, planning: str, defaultAction: Action, defaultMcp: int | None) -> Dict[str, any]:
+        result = {
+            "action": defaultAction,
+            "minimumChargePercentage": defaultMcp
+        }
         split = planning.strip().split()
         index = 0
         while index < len(split):
@@ -105,11 +111,11 @@ class Config:
 
     def getMinChargePercentage(self) -> int:
         """ Minimum charge percentage to enable discharge. """
-        key = f"h{self.getCurrentTime().hour:02}"
-        scheduleAction = self._parseScheduleAction(
-            self._settings["schedule"].get(key, "")
-        )
-        return scheduleAction.get("minimumChargePercentage", int(self._settings["minChargePercentage"]))
+        time = self.getCurrentTime()
+        key = f"h{time.hour:02}"
+        minuteKey = f"m{(math.floor(time.minute / 15) * 15):02}"
+        mcp = self.getSchedule().get(key).get(minuteKey).get("minimumChargePercentage", None)
+        return mcp if mcp is not None else int(self._settings["minChargePercentage"])
 
     def getChargePercentage(self) -> int:
         """ Get current charge percentage of the battery from HA. """
@@ -120,18 +126,30 @@ class Config:
         modeValue = str(self._settings["control_mode"]).upper()
         return ControlMode[modeValue]
 
-    def getSchedule(self) -> Dict[str, Dict[str, Action]]:
+    def getSchedule(self) -> Dict[str, Dict[str, Dict[str, any]]]:
         """ Get list of time stamped actions. """
+        if self._schedule is not None:
+            return self._schedule
+
         dict: Dict[str, Dict[str, str]] = self._settings["schedule"]
         schedule = {}
         for key in sorted(dict.keys()):
             minuteSchedule = {}
-            lastAction = Action(0)
+            lastAction = {
+                "action": Action(0),
+                "minimumChargePercentage": None
+            }
             for minuteKey in ["m00", "m15", "m30", "m45"]:
-                lastAction = self._parseScheduleAction(dict.get(key, "").get(minuteKey, "")).get("action", lastAction)
-                minuteSchedule[minuteKey] 
+                configuredAction = dict.get(key, "").get(minuteKey, "")
+                lastAction = self._parseScheduleAction(
+                    configuredAction,
+                    lastAction.get("action"),
+                    lastAction.get("minimumChargePercentage")
+                ) if configuredAction != "" else lastAction
+                minuteSchedule[minuteKey] = lastAction
             schedule[key] = minuteSchedule
 
+        self._schedule = schedule
         return schedule
 
     def getIsScheduleLoop(self) -> bool:

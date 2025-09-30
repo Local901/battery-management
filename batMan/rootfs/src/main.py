@@ -51,7 +51,7 @@ def scheduleImplementation(client: ModbusClient):
         minutes = math.floor(currentTime.minute / 15) * 15
         key = f"h{hour:02}"
         minuteKey = f"m{minutes:02}"
-        currentAction = schedule.get(key).get(minuteKey)
+        currentAction = schedule.get(key).get(minuteKey).get("action")
 
         if f"{key}{minuteKey}" == previousKey:
             continue
@@ -69,7 +69,7 @@ def scheduleImplementation(client: ModbusClient):
             else:
                 sendToInverter(client, True, currentAction.power)
 
-        # Sleep for half a minute before starting the next round.
+        # Sleep for a minute before starting the next round.
         time.sleep(60)
 
 def main():
