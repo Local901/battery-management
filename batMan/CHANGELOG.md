@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 4.0.1
+
+- Update translations.
+  - State Of Charge (SOC)
+  - transformer -> inverter
+
 ## 4.0.0
 
 - Add controls for schedule on 15 minute intervals
