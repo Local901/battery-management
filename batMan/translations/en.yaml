@@ -17,14 +17,14 @@ configuration:
     description: The time between 2 modbus requests if they are send directly after one another.
 
   minChargePercentage:
-    name: Minimum charge % in the battery
-    description: Minimum charge that the battery has to have to be able to discharge via the addon.
+    name: Minimum SOC % in the battery
+    description: Minimum State Of Charge(SOC) that the battery has to have to be able to discharge via the addon.
 
   control_mode:
     name: Control mode
     description: |
       Mode in which behavior of the addon id determined:
-      - none: release control to the transformer.
+      - none: release control to the inverter.
       - charge: Charge the battery with a value of 5000.
       - discharge: Discharge the battery with a value of 5000.
       - schedule: Follow the schedule from start to finish.
