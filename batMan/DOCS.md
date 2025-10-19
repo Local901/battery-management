@@ -2,19 +2,19 @@
 
 ## How to use
 
-This add-on helps you to manager your SMA tripower transformer connected home battery charge and discharge.
+This add-on helps you to manager your SMA tripower inverter connected home battery charge and discharge.
 
 ### Mode: None
 
-This mode releases control back to the transformer.
+This mode releases control back to the inverter.
 
 ### Mode: Charge
 
-This mode takes control away from the transformer and forces it to charge up to 5kW/h.
+This mode takes control away from the inverter and forces it to charge up to 5kW/h.
 
 ### Mode: Discharge
 
-This mode takes control away from the transformer and forces it to discharge up to 5kW/h.
+This mode takes control away from the inverter and forces it to discharge up to 5kW/h.
 
 ### Mode: Schedule (24h clock)
 
@@ -28,6 +28,6 @@ This mode uses a schedule to time control changes that have been configured befo
   * `d 5000`
 * If nothing related to charging has been defined it will default to mode `None` and will free the inverter to do what it wants. This is also achievable by charging or discharging with 0 watt.
 
-#### Minimum charge percentage
+#### Minimum SOC percentage
 
-* This is a way to overwrite the minimum discharge percentage for a given hour. This action is indicated by `mcp` followed by the percentage that you would fill in in another field in the configuration of this addon. This value is bounded from 0 to 100. Going outside this range will automatically set it to the closest in bound value.
+* This is a way to overwrite the minimum SOC percentage for a given hour. This action is indicated by `mcp` followed by the percentage that you would fill in in another field in the configuration of this addon. This value is bounded from 0 to 100. Going outside this range will automatically set it to the closest in bound value.
