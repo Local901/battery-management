@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 4.0.2
+
+- Make sure the action gets re sent to the transformer to have the minimum soc actually get triggered.
+
 ## 4.0.1
 
 - Update translations.
