@@ -53,12 +53,11 @@ def scheduleImplementation(client: ModbusClient):
         minuteKey = f"m{minutes:02}"
         currentAction = schedule.get(key).get(minuteKey).get("action")
 
-        if f"{key}{minuteKey}" == previousKey:
-            continue
-
         # print hour marks to show progress
-        print(f"Current Time: {currentTime.hour}:{minutes:02}")
-        previousKey = f"{key}{minuteKey}"
+        if f"{key}{minuteKey}" != previousKey:
+            print(f"Current Time: {currentTime.hour}:{minutes:02}")
+            previousKey = f"{key}{minuteKey}"
+
 
         if currentAction == None:
             sendToInverter(client, False, 0)
